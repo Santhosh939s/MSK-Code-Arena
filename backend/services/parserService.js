@@ -146,7 +146,13 @@ function extractConstraints(text) {
   if (!m) return [];
   return m[1]
     .split('\n')
-    .map(l => l.replace(/^[\s\-•*·→\d\.]+\.\s*/, '').replace(/^[\s\-•*·→]+/, '').trim())
+    .map(l => {
+      let temp = l.trim();
+      temp = temp.replace(/^\d+\.\s+/, '');
+      temp = temp.replace(/^[•*·→\s]+/, '');
+      temp = temp.replace(/^-\s+/, '');
+      return temp.trim();
+    })
     .filter(l => l.length > 0 && /[\d<>=≤≥^]/.test(l));
 }
 
