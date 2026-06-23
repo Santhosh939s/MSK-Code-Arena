@@ -43,6 +43,13 @@ const execLimiter = rateLimit({
 });
 
 // ── Health check ───────────────────────────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to the MSK Coding Area Backend API. Use /health to check status.',
+    docs: 'https://github.com/Santhosh939s/MSK-Code-Arena',
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
