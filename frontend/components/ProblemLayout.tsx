@@ -67,7 +67,7 @@ export default function ProblemLayout({ problem }: Props) {
   const [activeMobileTab, setActiveMobileTab] = useState<'description' | 'code'>('description');
 
   return (
-    <div className="flex flex-col h-screen bg-arena-bg overflow-hidden select-none">
+    <div className="flex flex-col h-screen bg-arena-bg overflow-hidden">
       {/* Top navigation bar */}
       <header className="flex items-center justify-between px-4 py-2 border-b border-arena-border bg-arena-panel flex-shrink-0 z-10">
         <div className="flex items-center gap-4">
