@@ -64,8 +64,10 @@ export default function ProblemLayout({ problem }: Props) {
     }
   }, [code, problem]);
 
+  const [activeMobileTab, setActiveMobileTab] = useState<'description' | 'code'>('description');
+
   return (
-    <div className="flex flex-col h-screen bg-arena-bg overflow-hidden">
+    <div className="flex flex-col h-screen bg-arena-bg overflow-hidden select-none">
       {/* Top navigation bar */}
       <header className="flex items-center justify-between px-4 py-2 border-b border-arena-border bg-arena-panel flex-shrink-0 z-10">
         <div className="flex items-center gap-4">
@@ -97,8 +99,66 @@ export default function ProblemLayout({ problem }: Props) {
         </div>
       </header>
 
-      {/* Main workspace — 3-panel layout */}
-      <div className="flex-1 overflow-hidden">
+      {/* ── MOBILE WORKSPACE (Tabbed view for mobile) ────────────────────────── */}
+      <div className="flex-1 flex flex-col md:hidden overflow-hidden">
+        {/* Mobile Tab Switcher */}
+        <div className="flex border-b border-arena-border bg-arena-panel flex-shrink-0">
+          <button
+            onClick={() => setActiveMobileTab('description')}
+            className={`flex-1 py-3 text-xs font-semibold text-center border-b-2 transition-all ${
+              activeMobileTab === 'description'
+                ? 'border-arena-primary text-arena-primary bg-arena-primary/5'
+                : 'border-transparent text-arena-muted hover:text-arena-text'
+            }`}
+          >
+            Description
+          </button>
+          <button
+            onClick={() => setActiveMobileTab('code')}
+            className={`flex-1 py-3 text-xs font-semibold text-center border-b-2 transition-all ${
+              activeMobileTab === 'code'
+                ? 'border-arena-primary text-arena-primary bg-arena-primary/5'
+                : 'border-transparent text-arena-muted hover:text-arena-text'
+            }`}
+          >
+            Code & Run
+          </button>
+        </div>
+
+        {/* Mobile Tab Content */}
+        <div className="flex-1 overflow-hidden relative">
+          {activeMobileTab === 'description' ? (
+            <div className="h-full overflow-hidden">
+              <LeftPanel problem={problem} />
+            </div>
+          ) : (
+            <div className="h-full flex flex-col overflow-hidden">
+              <div className="flex-1 min-h-[250px] overflow-hidden">
+                <RightPanel
+                  code={code}
+                  onChange={setCode}
+                  onRun={handleRun}
+                  onSubmit={handleSubmit}
+                  running={running}
+                  submitting={submitting}
+                />
+              </div>
+              <div className="h-[220px] border-t border-arena-border overflow-hidden flex flex-col flex-shrink-0">
+                <BottomPanel
+                  visibleTests={problem.visibleTests}
+                  runResult={runResult}
+                  submitResult={submitResult}
+                  running={running}
+                  submitting={submitting}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── DESKTOP WORKSPACE (Resizable split panel view) ──────────────────── */}
+      <div className="hidden md:block flex-1 overflow-hidden">
         <PanelGroup direction="horizontal" className="h-full">
           {/* Left panel */}
           <Panel defaultSize={38} minSize={20} maxSize={60} id="left-panel" order={1}>
