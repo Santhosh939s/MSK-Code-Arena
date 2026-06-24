@@ -27,8 +27,8 @@ async function parseProblemController(req, res) {
       if (parsed) {
         usedGemini = true;
       } else {
-        console.log('[Parser] Gemini failed or not configured. Falling back to regex parser.');
-        parsed = parseProblem(cleanText);
+        console.log('[Parser] Gemini failed to generate problem for short query.');
+        return res.status(503).json({ error: 'AI generation service is temporarily busy. Please click "Generate Problem" again.' });
       }
     } else {
       // Full text copy-paste

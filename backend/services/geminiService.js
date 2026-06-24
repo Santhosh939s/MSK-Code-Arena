@@ -66,33 +66,52 @@ Instructions:
     }
   };
 
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+  const retries = 2;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      console.log(`[Gemini] Sending request to Gemini (Attempt ${attempt}/${retries})...`);
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error(`[Gemini API Error] Status: ${res.status}, Body:`, errText);
+      if (!res.ok) {
+        const errText = await res.text();
+        console.warn(`[Gemini API Error] Attempt ${attempt} failed with status: ${res.status}. Error: ${errText.slice(0, 150)}`);
+        if (attempt < retries) {
+          console.log('[Gemini] Retrying in 1.5 seconds...');
+          await new Promise(r => setTimeout(r, 1500));
+          continue;
+        }
+        return null;
+      }
+
+      const data = await res.json();
+      const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!textResponse) {
+        console.warn(`[Gemini] Attempt ${attempt} returned empty response content.`);
+        if (attempt < retries) {
+          await new Promise(r => setTimeout(r, 1500));
+          continue;
+        }
+        return null;
+      }
+
+      return JSON.parse(textResponse);
+    } catch (err) {
+      console.error(`[Gemini Error] Attempt ${attempt} caught exception:`, err.message);
+      if (attempt < retries) {
+        console.log('[Gemini] Retrying in 1.5 seconds...');
+        await new Promise(r => setTimeout(r, 1500));
+        continue;
+      }
       return null;
     }
-
-    const data = await res.json();
-    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!textResponse) {
-      console.error('[Gemini] Received empty response content.');
-      return null;
-    }
-
-    return JSON.parse(textResponse);
-  } catch (err) {
-    console.error('[Gemini Error]', err.message);
-    return null;
   }
+  return null;
 }
 
 module.exports = { generateProblemWithGemini };
