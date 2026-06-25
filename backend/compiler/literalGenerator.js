@@ -4,9 +4,14 @@
 class CppLiteralGenerator {
   generate(val, type) {
     const v = String(val).trim();
-    const cleaned = type.replace(/\s+/g, '');
+    // Clean type string: remove const, pointers/references, access labels, and all whitespace
+    const cleaned = type
+      .replace(/\b(public|private|protected)\s*:/gi, '')
+      .replace(/\bconst\b/g, '')
+      .replace(/[&*]/g, '')
+      .replace(/\s+/g, '');
 
-    if (cleaned === 'string' || cleaned === 'conststring&' || cleaned === 'conststring') {
+    if (cleaned === 'string') {
       return v.startsWith('"') ? v : `"${v.replace(/"/g, '\\"')}"`;
     }
     if (cleaned === 'char') {
@@ -23,9 +28,9 @@ class CppLiteralGenerator {
       const inner = v.replace(/^\[|^\{|\]$|\}$/g, '').trim();
       return `{${inner}}`;
     }
-    if (cleaned === 'ListNode*' || cleaned === 'TreeNode*') {
+    if (cleaned === 'ListNode' || cleaned === 'TreeNode') {
       const inner = v.replace(/^\[|^\{|\]$|\}$/g, '').trim();
-      return `create${cleaned.replace('*', '')}({${inner}})`;
+      return `create${cleaned}({${inner}})`;
     }
     return v; // int, long long, double, float
   }

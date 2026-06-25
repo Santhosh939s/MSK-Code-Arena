@@ -8,7 +8,11 @@ class CppComparisonEngine {
 
   generateComparisonCode(returnType, callExpr, expected, caseNum) {
     const expLit = this.literalGenerator.generate(expected, returnType);
-    const cleaned = returnType.replace(/\s+/g, '');
+    const cleaned = returnType
+      .replace(/\b(public|private|protected)\s*:/gi, '')
+      .replace(/\bconst\b/g, '')
+      .replace(/[&*]/g, '')
+      .replace(/\s+/g, '');
 
     if (cleaned === 'void') {
       return `

@@ -20,11 +20,16 @@ function extractSignatureFromUserCode(userCode, defaultSig) {
     if (['if', 'for', 'while', 'switch', 'return', 'class', 'public', 'private', 'protected', 'using', 'namespace', 'const'].includes(name)) {
       continue;
     }
-    if (['public', 'private', 'protected'].includes(returnType)) {
+
+    // Clean access modifiers from returnType
+    returnType = returnType
+      .replace(/\b(public|private|protected)\s*:/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!returnType || ['public', 'private', 'protected'].includes(returnType)) {
       continue;
     }
-
-    returnType = returnType.replace(/\s+/g, ' ');
 
     const params = [];
     if (paramsText) {
