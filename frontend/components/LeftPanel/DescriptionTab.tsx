@@ -46,20 +46,20 @@ export default function DescriptionTab({ title, description, examples, constrain
                 <div className="border border-arena-border rounded-lg overflow-hidden">
                   <div className="bg-[#0d0f14] px-4 py-3 space-y-1.5 font-mono text-xs leading-relaxed border-l-2 border-arena-primary">
                     {/* Input */}
-                    <div className="flex flex-wrap gap-x-1">
-                      <span className="font-bold text-white">Input:</span>
-                      <span className="text-arena-text-secondary">{ex.input}</span>
+                    <div className="flex flex-col md:flex-row items-start gap-x-1">
+                      <span className="font-bold text-white flex-shrink-0">Input:</span>
+                      <span className="text-arena-text-secondary whitespace-pre-wrap">{ex.input}</span>
                     </div>
                     {/* Output */}
-                    <div className="flex flex-wrap gap-x-1">
-                      <span className="font-bold text-white">Output:</span>
-                      <span className="text-arena-text-secondary">{ex.output}</span>
+                    <div className="flex flex-col md:flex-row items-start gap-x-1">
+                      <span className="font-bold text-white flex-shrink-0">Output:</span>
+                      <span className="text-arena-text-secondary whitespace-pre-wrap">{ex.output}</span>
                     </div>
                     {/* Explanation */}
                     {ex.explanation && (
-                      <div className="pt-1 border-t border-arena-border/60 mt-1">
-                        <span className="font-bold text-white">Explanation: </span>
-                        <span className="text-arena-text-secondary">{ex.explanation}</span>
+                      <div className="pt-1 border-t border-arena-border/60 mt-1 flex flex-col md:flex-row items-start gap-x-1">
+                        <span className="font-bold text-white flex-shrink-0">Explanation:</span>
+                        <span className="text-arena-text-secondary whitespace-pre-wrap">{ex.explanation}</span>
                       </div>
                     )}
                   </div>

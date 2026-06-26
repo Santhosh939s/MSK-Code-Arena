@@ -89,20 +89,20 @@ export default function BottomPanel({ visibleTests, runResult, submitResult, run
                 <>
                   <div>
                     <div className="text-arena-muted mb-1">Input</div>
-                    <div className="bg-arena-bg rounded-lg p-3 text-arena-text border border-arena-border">
+                    <div className="bg-arena-bg rounded-lg p-3 text-arena-text border border-arena-border whitespace-pre-wrap">
                       {visibleTests[selectedCase].input}
                     </div>
                   </div>
                   <div>
                     <div className="text-arena-muted mb-1">Expected Output</div>
-                    <div className="bg-arena-bg rounded-lg p-3 text-arena-success border border-arena-border">
+                    <div className="bg-arena-bg rounded-lg p-3 text-arena-success border border-arena-border whitespace-pre-wrap">
                       {visibleTests[selectedCase].output}
                     </div>
                   </div>
                   {result?.results?.[selectedCase] && (
                     <div>
                       <div className="text-arena-muted mb-1">Your Output</div>
-                      <div className={`bg-arena-bg rounded-lg p-3 border ${
+                      <div className={`bg-arena-bg rounded-lg p-3 border whitespace-pre-wrap ${
                         result.results[selectedCase].passed
                           ? 'text-arena-success border-arena-success/30'
                           : 'text-arena-error border-arena-error/30'
@@ -173,9 +173,15 @@ export default function BottomPanel({ visibleTests, runResult, submitResult, run
                         </span>
                       </div>
                       {!r.passed && (
-                        <div className="ml-4 space-y-0.5 text-arena-muted">
-                          <div>Expected: <span className="text-arena-success">{r.expected}</span></div>
-                          <div>Received: <span className="text-arena-error">{r.received}</span></div>
+                        <div className="ml-4 space-y-1 text-arena-muted">
+                          <div className="flex flex-col items-start">
+                            <span>Expected:</span>
+                            <span className="text-arena-success whitespace-pre-wrap pl-2 border-l border-arena-border mt-0.5">{r.expected}</span>
+                          </div>
+                          <div className="flex flex-col items-start mt-1">
+                            <span>Received:</span>
+                            <span className="text-arena-error whitespace-pre-wrap pl-2 border-l border-arena-border mt-0.5">{r.received}</span>
+                          </div>
                         </div>
                       )}
                     </div>
