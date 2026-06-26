@@ -152,6 +152,7 @@ export default function LandingPage() {
               placeholder={PLACEHOLDER}
               rows={14}
               className="textarea-glow w-full bg-transparent p-5 font-mono text-sm text-arena-text placeholder:text-arena-muted/50 resize-none border-0 outline-none leading-relaxed"
+              style={{ fontVariantLigatures: 'none', fontFeatureSettings: '"liga" 0, "clig" 0' }}
             />
           </div>
 

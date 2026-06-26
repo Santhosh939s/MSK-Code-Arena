@@ -44,7 +44,10 @@ export default function DescriptionTab({ title, description, examples, constrain
                   Example {i + 1}
                 </h3>
                 <div className="border border-arena-border rounded-lg overflow-hidden">
-                  <div className="bg-[#0d0f14] px-4 py-3 space-y-1.5 font-mono text-xs leading-relaxed border-l-2 border-arena-primary">
+                  <div 
+                    className="bg-[#0d0f14] px-4 py-3 space-y-1.5 font-mono text-xs leading-relaxed border-l-2 border-arena-primary"
+                    style={{ fontVariantLigatures: 'none', fontFeatureSettings: '"liga" 0, "clig" 0' }}
+                  >
                     {/* Input */}
                     <div className="flex flex-col md:flex-row items-start gap-x-1">
                       <span className="font-bold text-white flex-shrink-0">Input:</span>

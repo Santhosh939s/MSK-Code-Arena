@@ -84,7 +84,10 @@ export default function BottomPanel({ visibleTests, runResult, submitResult, run
             </div>
 
             {/* Case detail */}
-            <div className="flex-1 p-4 space-y-3 font-mono text-xs overflow-y-auto">
+            <div 
+              className="flex-1 p-4 space-y-3 font-mono text-xs overflow-y-auto"
+              style={{ fontVariantLigatures: 'none', fontFeatureSettings: '"liga" 0, "clig" 0' }}
+            >
               {visibleTests[selectedCase] && (
                 <>
                   <div>
@@ -159,7 +162,10 @@ export default function BottomPanel({ visibleTests, runResult, submitResult, run
                 </div>
 
                 {/* Per-case results */}
-                <div className="space-y-2">
+                <div 
+                  className="space-y-2"
+                  style={{ fontVariantLigatures: 'none', fontFeatureSettings: '"liga" 0, "clig" 0' }}
+                >
                   {result.results.map((r) => (
                     <div key={r.caseNumber} className={`rounded-lg border p-3 ${
                       r.passed ? 'border-arena-success/20 bg-arena-success/5' : 'border-arena-error/20 bg-arena-error/5'
