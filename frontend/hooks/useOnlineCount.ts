@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getOnlineCount } from '@/lib/api';
 
 export function useOnlineCount() {
-  const [count, setCount] = useState<number>(3);
+  const [count, setCount] = useState<number>(1);
 
   useEffect(() => {
     let clientId = sessionStorage.getItem('msk_client_id');

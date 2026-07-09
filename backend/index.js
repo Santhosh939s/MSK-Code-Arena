@@ -75,10 +75,7 @@ app.post('/online-count', (req, res) => {
     }
   }
 
-  const minutes = new Date().getMinutes();
-  const baseline = 3 + (minutes % 6);
-  const actualCount = Object.keys(activeClients).length;
-  const count = Math.max(actualCount, baseline);
+  const count = Object.keys(activeClients).length;
 
   res.json({ count });
 });
