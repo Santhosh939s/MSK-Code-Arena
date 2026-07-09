@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { parseProblem } from '@/lib/api';
 import { ParsedProblem } from '@/lib/types';
+import { useOnlineCount } from '@/hooks/useOnlineCount';
 
 const PLACEHOLDER = `Paste any coding problem here...
 
@@ -46,6 +47,7 @@ function Particles() {
 
 export default function LandingPage() {
   const router = useRouter();
+  const onlineCount = useOnlineCount();
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -106,8 +108,16 @@ export default function LandingPage() {
             <span className="text-xs px-2.5 py-1 rounded-full border border-arena-border text-arena-muted font-mono">
               v1.0
             </span>
-            <span className="text-xs px-2.5 py-1 rounded-full bg-arena-success/10 border border-arena-success/30 text-arena-success">
+            <span className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-arena-success/10 border border-arena-success/30 text-arena-success">
+              <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5 animate-spin-slow" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                <circle cx="12" cy="12" r="4" />
+              </svg>
               C++ Engine
+            </span>
+            <span className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-arena-secondary/10 border border-arena-secondary/30 text-arena-secondary">
+              <span className="w-1.5 h-1.5 rounded-full bg-arena-success animate-pulse" />
+              {onlineCount} Online
             </span>
           </div>
         </div>

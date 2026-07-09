@@ -8,12 +8,14 @@ import RightPanel from './RightPanel';
 import BottomPanel from './BottomPanel';
 import { ParsedProblem, RunResult, SubmitResult } from '@/lib/types';
 import { runCode, submitCode } from '@/lib/api';
+import { useOnlineCount } from '@/hooks/useOnlineCount';
 
 interface Props {
   problem: ParsedProblem;
 }
 
 export default function ProblemLayout({ problem }: Props) {
+  const onlineCount = useOnlineCount();
   const [code, setCode] = useState(problem.cppCode);
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -90,8 +92,15 @@ export default function ProblemLayout({ problem }: Props) {
         </div>
         <div className="flex items-center gap-2">
           <span className="hidden sm:flex items-center gap-1.5 text-xs text-arena-muted bg-arena-bg border border-arena-border rounded-lg px-3 py-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-arena-success animate-pulse" />
+            <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5 text-arena-success animate-spin-slow" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
             Engine ready
+          </span>
+          <span className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-arena-secondary/10 border border-arena-secondary/30 text-arena-secondary">
+            <span className="w-1.5 h-1.5 rounded-full bg-arena-success animate-pulse" />
+            {onlineCount} Online
           </span>
           <Link href="/" className="btn-secondary px-3 py-1.5 rounded-lg text-xs font-medium">
             ← New Problem

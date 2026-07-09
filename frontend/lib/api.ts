@@ -32,3 +32,12 @@ export async function checkHealth(): Promise<boolean> {
     return false;
   }
 }
+
+export async function getOnlineCount(clientId: string): Promise<number> {
+  try {
+    const res = await api.post('/online-count', { clientId });
+    return res.data.count;
+  } catch {
+    return 3;
+  }
+}

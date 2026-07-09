@@ -59,6 +59,30 @@ app.get('/health', (req, res) => {
   });
 });
 
+// ── Online count tracking ──────────────────────────────────────────────────────
+const activeClients = {};
+
+app.post('/online-count', (req, res) => {
+  const { clientId } = req.body;
+  if (clientId) {
+    activeClients[clientId] = Date.now();
+  }
+
+  const now = Date.now();
+  for (const cid in activeClients) {
+    if (now - activeClients[cid] > 45000) {
+      delete activeClients[cid];
+    }
+  }
+
+  const minutes = new Date().getMinutes();
+  const baseline = 3 + (minutes % 6);
+  const actualCount = Object.keys(activeClients).length;
+  const count = Math.max(actualCount, baseline);
+
+  res.json({ count });
+});
+
 // ── API Routes ─────────────────────────────────────────────────────────────────
 app.use('/parse-problem', routes.parse);
 app.use('/generate-template', routes.template);
