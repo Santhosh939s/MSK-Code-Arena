@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: 'MSK Code Arena — AI-Powered Coding Practice',
   description: 'Paste any coding problem from LeetCode, Striver TUF, GeeksforGeeks, or any source and practice in a LeetCode-style workspace. Auto-generates starter code and executes with custom engine.',
   keywords: ['coding', 'practice', 'leetcode', 'algorithms', 'DSA', 'competitive programming'],
+  verification: {
+    google: 'googlea3ddbcb8fc1db64d',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
