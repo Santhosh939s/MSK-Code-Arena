@@ -24,7 +24,17 @@ function compileCpp(id, srcPath) {
       if (code === 0) {
         resolve({ success: true, error: null, binPath });
       } else {
-        resolve({ success: false, error: stderr.trim() || 'Compilation failed', binPath: null });
+        let cleanStderr = stderr;
+        // Clean up references to solution.cpp
+        cleanStderr = cleanStderr.replace(/solution\.cpp:(\d+):(\d+):/g, 'Line $1:');
+        cleanStderr = cleanStderr.replace(/solution\.cpp:(\d+):/g, 'Line $1:');
+        cleanStderr = cleanStderr.replace(/solution\.cpp:/g, '');
+        
+        // Clean up references to temp file path (e.g. path/to/src_xxx.cpp)
+        cleanStderr = cleanStderr.replace(/[^\n]*src_[^.\s]+\.cpp:(\d+):(\d+):/g, 'Line $1:');
+        cleanStderr = cleanStderr.replace(/[^\n]*src_[^.\s]+\.cpp:(\d+):/g, 'Line $1:');
+        
+        resolve({ success: false, error: cleanStderr.trim() || 'Compilation failed', binPath: null });
       }
     });
 

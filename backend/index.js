@@ -28,6 +28,26 @@ app.use(cors({
   credentials: true,
 }));
 
+// ── Online count tracking (Bypasses rate limiting) ──────────────────────────────
+const activeClients = {};
+
+app.post('/online-count', (req, res) => {
+  const { clientId } = req.body;
+  if (clientId) {
+    activeClients[clientId] = Date.now();
+  }
+
+  const now = Date.now();
+  for (const cid in activeClients) {
+    if (now - activeClients[cid] > 7000) {
+      delete activeClients[cid];
+    }
+  }
+
+  const count = Object.keys(activeClients).length;
+  res.json({ count });
+});
+
 // Global rate limit
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -59,26 +79,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// ── Online count tracking ──────────────────────────────────────────────────────
-const activeClients = {};
 
-app.post('/online-count', (req, res) => {
-  const { clientId } = req.body;
-  if (clientId) {
-    activeClients[clientId] = Date.now();
-  }
-
-  const now = Date.now();
-  for (const cid in activeClients) {
-    if (now - activeClients[cid] > 45000) {
-      delete activeClients[cid];
-    }
-  }
-
-  const count = Object.keys(activeClients).length;
-
-  res.json({ count });
-});
 
 // ── API Routes ─────────────────────────────────────────────────────────────────
 app.use('/parse-problem', routes.parse);

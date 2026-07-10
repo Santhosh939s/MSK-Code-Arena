@@ -17,7 +17,7 @@ export function useOnlineCount() {
     };
 
     fetchCount();
-    const interval = setInterval(fetchCount, 20000);
+    const interval = setInterval(fetchCount, 3000);
     return () => clearInterval(interval);
   }, []);
 

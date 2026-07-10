@@ -35,8 +35,10 @@ using namespace std;
 
 ${this.printHelpers.getHelpersCode()}
 
+#line 1 "solution.cpp"
 ${userCode}
 
+#line 1 "main.cpp"
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
