@@ -48,6 +48,12 @@ app.post('/online-count', (req, res) => {
   res.json({ count });
 });
 
+// ── Execution Stats Route (Bypasses rate limiting) ──────────────────────────────
+const { getStats } = require('./services/executionService');
+app.get('/execution-stats', (req, res) => {
+  res.json(getStats());
+});
+
 // Global rate limit
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
