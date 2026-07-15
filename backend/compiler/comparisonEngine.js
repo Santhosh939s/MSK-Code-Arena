@@ -22,11 +22,20 @@ class CppComparisonEngine {
     }`;
     }
 
+    const baseType = returnType.replace(/&/g, '').trim();
+
+    let compExpr = `(__res${caseNum} == __exp${caseNum})`;
+    if (cleaned === 'ListNode') {
+      compExpr = `compareList(__res${caseNum}, __exp${caseNum})`;
+    } else if (cleaned === 'TreeNode') {
+      compExpr = `compareTree(__res${caseNum}, __exp${caseNum})`;
+    }
+
     return `
     {
         auto __res${caseNum} = ${callExpr};
-        ${returnType} __exp${caseNum} = ${expLit};
-        bool __ok${caseNum} = (__res${caseNum} == __exp${caseNum});
+        const ${baseType} __exp${caseNum} = ${expLit};
+        bool __ok${caseNum} = ${compExpr};
         cout << (__ok${caseNum} ? "PASS" : "FAIL") << "\\n";
         if (!__ok${caseNum}) {
             printValue(__exp${caseNum}); cout << "\\n";
