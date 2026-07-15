@@ -15,12 +15,20 @@ class CppWrapperGenerator {
       const vals = this.parseParamValues(tc.input, params);
       return params.map((p, pi) => {
         const lit = this.literalGenerator.generate(vals[pi] ?? '0', p.type);
-        const cleanedType = p.type.replace(/\s+/g, '');
         
-        if (cleanedType.startsWith('vector')) {
-          return `        ${p.type} __${p.name}_${idx} = ${p.type}${lit};`;
+        const baseType = p.type.replace(/&/g, '').trim();
+        const constructorType = baseType.replace(/\bconst\b/g, '').trim();
+        const cleanedConstructor = constructorType.replace(/\s+/g, '');
+        
+        let rawDecl = '';
+        if (cleanedConstructor.startsWith('vector')) {
+          rawDecl = `        ${baseType} __raw_${p.name}_${idx} = ${constructorType}${lit};`;
+        } else {
+          rawDecl = `        ${baseType} __raw_${p.name}_${idx} = ${lit};`;
         }
-        return `        ${p.type} __${p.name}_${idx} = ${lit};`;
+        
+        const refDecl = `        ${p.type} __${p.name}_${idx} = __raw_${p.name}_${idx};`;
+        return `${rawDecl}\n${refDecl}`;
       }).join('\n');
     });
 

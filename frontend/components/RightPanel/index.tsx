@@ -7,11 +7,13 @@ interface Props {
   onSubmit: () => void;
   running: boolean;
   submitting: boolean;
+  runningText?: string;
+  submittingText?: string;
 }
 
 import CodeEditor from './CodeEditor';
 
-export default function RightPanel({ code, onChange, onRun, onSubmit, running, submitting }: Props) {
+export default function RightPanel({ code, onChange, onRun, onSubmit, running, submitting, runningText, submittingText }: Props) {
   return (
     <div className="flex flex-col h-full bg-arena-panel overflow-hidden">
       {/* Toolbar */}
@@ -36,7 +38,7 @@ export default function RightPanel({ code, onChange, onRun, onSubmit, running, s
             className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-medium border border-arena-border text-arena-text hover:border-arena-success hover:text-arena-success transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {running ? (
-              <><span className="spinner !border-arena-success/30 !border-t-arena-success" />Running...</>
+              <><span className="spinner !border-arena-success/30 !border-t-arena-success" />{runningText || 'Running...'}</>
             ) : (
               <><svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>Run</>
             )}
@@ -48,7 +50,7 @@ export default function RightPanel({ code, onChange, onRun, onSubmit, running, s
             className="btn-primary flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {submitting ? (
-              <><span className="spinner !border-[#0f1117]/30 !border-t-[#0f1117]" />Submitting...</>
+              <><span className="spinner !border-[#0f1117]/30 !border-t-[#0f1117]" />{submittingText || 'Submitting...'}</>
             ) : (
               <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>Submit</>
             )}

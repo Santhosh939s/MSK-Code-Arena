@@ -23,20 +23,14 @@ async function submitController(req, res) {
       ...stored.hiddenTests.map(t => ({ ...t, isHidden: true })),
     ];
 
-    const result = await executeTests(code, stored.signature, allTests);
-
-    // Sanitize: hide inputs for hidden test cases
-    if (result.results) {
-      result.results = result.results.map(r =>
-        r.isHidden ? { ...r, input: '[Hidden Test Case]' } : r
-      );
-    }
-
-    return res.json({
-      ...result,
+    const metadata = {
       visibleTotal: stored.visibleTests.length,
       hiddenTotal: stored.hiddenTests.length,
-    });
+    };
+
+    const result = await executeTests(code, stored.signature, allTests, 'cpp', metadata);
+
+    return res.json(result);
   } catch (err) {
     console.error('[submit]', err);
     return res.status(500).json({ error: 'Submission failed. Please try again.' });

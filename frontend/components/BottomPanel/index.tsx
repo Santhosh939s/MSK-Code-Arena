@@ -9,9 +9,11 @@ interface Props {
   submitResult: SubmitResult | null;
   running: boolean;
   submitting: boolean;
+  runningText?: string;
+  submittingText?: string;
 }
 
-export default function BottomPanel({ visibleTests, runResult, submitResult, running, submitting }: Props) {
+export default function BottomPanel({ visibleTests, runResult, submitResult, running, submitting, runningText, submittingText }: Props) {
   const [activeTab, setActiveTab] = useState<BottomTab>('testcases');
   const [selectedCase, setSelectedCase] = useState(0);
 
@@ -125,7 +127,7 @@ export default function BottomPanel({ visibleTests, runResult, submitResult, run
             {(running || submitting) && (
               <div className="flex items-center gap-2 text-arena-muted animate-pulse">
                 <span className="spinner" />
-                {running ? 'Running test cases...' : 'Submitting solution...'}
+                {running ? (runningText || 'Running test cases...') : (submittingText || 'Submitting solution...')}
               </div>
             )}
 

@@ -79,14 +79,16 @@ function executeBinary(binPath) {
 /**
  * Full pipeline: write → compile → execute → cleanup
  */
-async function compileAndRun(id, sourceCode) {
+async function compileAndRun(id, sourceCode, onStatus) {
   const srcPath = writeSourceFile(id, sourceCode);
   try {
+    if (onStatus) onStatus('compiling');
     const compResult = await compileCpp(id, srcPath);
     if (!compResult.success) {
       return { ok: false, type: 'compile_error', message: compResult.error, stdout: '' };
     }
 
+    if (onStatus) onStatus('running_tests');
     const execResult = await executeBinary(compResult.binPath);
     if (execResult.timedOut) {
       return { ok: false, type: 'time_limit', message: 'Time Limit Exceeded (5s)', stdout: '' };
@@ -95,6 +97,7 @@ async function compileAndRun(id, sourceCode) {
       return { ok: false, type: 'runtime_error', message: execResult.stderr || 'Runtime Error', stdout: '' };
     }
 
+    if (onStatus) onStatus('comparing_outputs');
     return { ok: true, type: 'success', message: '', stdout: execResult.stdout };
   } finally {
     cleanup(id);

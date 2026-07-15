@@ -8,9 +8,9 @@ class CppTestcaseRunner {
     this.wrapperGenerator = wrapperGenerator;
   }
 
-  async run(id, userCode, signature, testCases) {
+  async run(id, userCode, signature, testCases, onStatus) {
     const fullSource = this.wrapperGenerator.generateWrapper(userCode, signature, testCases);
-    const runResult = await compileAndRun(id, fullSource);
+    const runResult = await compileAndRun(id, fullSource, onStatus);
 
     if (!runResult.ok) {
       let status = 'Runtime Error';

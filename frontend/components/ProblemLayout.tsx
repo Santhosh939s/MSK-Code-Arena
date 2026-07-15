@@ -14,20 +14,44 @@ interface Props {
   problem: ParsedProblem;
 }
 
+function getStatusLabel(progress: { status: string; position?: number; estimatedWait?: number }): string {
+  switch (progress.status) {
+    case 'queued':
+      if (progress.position !== undefined) {
+        const waitText = progress.estimatedWait ? `, Est. Wait: ${progress.estimatedWait}s` : '';
+        return `Queued (#${progress.position}${waitText})`;
+      }
+      return 'Queued...';
+    case 'compiling':
+      return 'Compiling...';
+    case 'running_tests':
+      return 'Running Tests...';
+    case 'comparing_outputs':
+      return 'Comparing Outputs...';
+    default:
+      return 'Processing...';
+  }
+}
+
 export default function ProblemLayout({ problem }: Props) {
   const onlineCount = useOnlineCount();
   const [code, setCode] = useState(problem.cppCode);
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [runningText, setRunningText] = useState('Running...');
+  const [submittingText, setSubmittingText] = useState('Submitting...');
   const [runResult, setRunResult] = useState<RunResult | null>(null);
   const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null);
 
   const handleRun = useCallback(async () => {
     setRunning(true);
+    setRunningText('Running...');
     setRunResult(null);
     setSubmitResult(null);
     try {
-      const result = await runCode(problem.id, code);
+      const result = await runCode(problem.id, code, (progress) => {
+        setRunningText(getStatusLabel(progress));
+      });
       setRunResult(result);
     } catch (err: any) {
       setRunResult({
@@ -45,10 +69,13 @@ export default function ProblemLayout({ problem }: Props) {
 
   const handleSubmit = useCallback(async () => {
     setSubmitting(true);
+    setSubmittingText('Submitting...');
     setRunResult(null);
     setSubmitResult(null);
     try {
-      const result = await submitCode(problem.id, code);
+      const result = await submitCode(problem.id, code, (progress) => {
+        setSubmittingText(getStatusLabel(progress));
+      });
       setSubmitResult(result);
     } catch (err: any) {
       setSubmitResult({
@@ -150,6 +177,8 @@ export default function ProblemLayout({ problem }: Props) {
                   onSubmit={handleSubmit}
                   running={running}
                   submitting={submitting}
+                  runningText={runningText}
+                  submittingText={submittingText}
                 />
               </div>
               <div className="h-[220px] border-t border-arena-border overflow-hidden flex flex-col flex-shrink-0">
@@ -159,6 +188,8 @@ export default function ProblemLayout({ problem }: Props) {
                   submitResult={submitResult}
                   running={running}
                   submitting={submitting}
+                  runningText={runningText}
+                  submittingText={submittingText}
                 />
               </div>
             </div>
@@ -187,6 +218,8 @@ export default function ProblemLayout({ problem }: Props) {
                   onSubmit={handleSubmit}
                   running={running}
                   submitting={submitting}
+                  runningText={runningText}
+                  submittingText={submittingText}
                 />
               </Panel>
 
@@ -199,6 +232,8 @@ export default function ProblemLayout({ problem }: Props) {
                   submitResult={submitResult}
                   running={running}
                   submitting={submitting}
+                  runningText={runningText}
+                  submittingText={submittingText}
                 />
               </Panel>
             </PanelGroup>

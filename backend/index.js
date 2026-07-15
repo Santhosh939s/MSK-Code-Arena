@@ -49,9 +49,47 @@ app.post('/online-count', (req, res) => {
 });
 
 // ── Execution Stats Route (Bypasses rate limiting) ──────────────────────────────
-const { getStats } = require('./services/executionService');
+const { getStats, getSubmissionStatus, addSubmissionListener, removeSubmissionListener } = require('./services/executionService');
 app.get('/execution-stats', (req, res) => {
   res.json(getStats());
+});
+
+// ── SSE Submission Status Route (Bypasses rate limiting) ────────────────────────
+app.get('/submission-status/:submissionId', (req, res) => {
+  const { submissionId } = req.params;
+
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+  });
+
+  res.write('\n');
+
+  const sub = getSubmissionStatus(submissionId);
+  if (!sub) {
+    res.write(`data: ${JSON.stringify({ status: 'not_found' })}\n\n`);
+    return res.end();
+  }
+
+  res.write(`data: ${JSON.stringify(sub)}\n\n`);
+
+  if (sub.status === 'completed' || sub.status === 'failed') {
+    return res.end();
+  }
+
+  const onStatusChange = (update) => {
+    res.write(`data: ${JSON.stringify(update)}\n\n`);
+    if (update.status === 'completed' || update.status === 'failed') {
+      res.end();
+    }
+  };
+
+  addSubmissionListener(submissionId, onStatusChange);
+
+  req.on('close', () => {
+    removeSubmissionListener(submissionId, onStatusChange);
+  });
 });
 
 // Global rate limit

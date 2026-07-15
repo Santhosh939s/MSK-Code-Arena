@@ -44,7 +44,7 @@ export default function DescriptionTab({ title, description, examples, constrain
                   Example {i + 1}
                 </h3>
                 <div className="border border-arena-border rounded-lg overflow-hidden">
-                  <div 
+                  <div
                     className="bg-[#0d0f14] px-4 py-3 space-y-1.5 font-mono text-xs leading-relaxed border-l-2 border-arena-primary"
                     style={{ fontVariantLigatures: 'none', fontFeatureSettings: '"liga" 0, "clig" 0' }}
                   >
