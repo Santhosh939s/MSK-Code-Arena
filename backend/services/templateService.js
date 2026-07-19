@@ -12,7 +12,7 @@ function inferType(val) {
   if (/^-?\d+$/.test(v) && Math.abs(parseInt(v)) > 2e9) return 'long long';
   if (/^-?\d+$/.test(v)) return 'int';
   if (/^-?\d+\.\d+$/.test(v)) return 'double';
-  return 'int';
+  return 'string';
 }
 
 // ── Parse params from example input ──────────────────────────────────────────

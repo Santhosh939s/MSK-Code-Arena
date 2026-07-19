@@ -14,7 +14,7 @@ function inferType(value: string): ParamType {
   if (/^\d+$/.test(v) && parseInt(v) > 2e9) return 'long';
   if (/^\d+$/.test(v)) return 'int';
   if (/^\d+\.\d+$/.test(v)) return 'double';
-  return 'int';
+  return 'string';
 }
 
 // ── Parse params from "Input: n1 = 4, n2 = 6" ────────────────────────────────

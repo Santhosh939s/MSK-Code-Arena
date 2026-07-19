@@ -169,7 +169,19 @@ class CppLiteralGenerator {
       return `createTreeNode({${items.join(', ')}})`;
     }
 
-    return v; // fallback (int, double, float, long long)
+    const isInt = ['int', 'short', 'longlong', 'unsigned', 'unsignedint', 'unsignedlonglong', 'long'].includes(cleaned);
+    const isFloat = ['double', 'float'].includes(cleaned);
+
+    if (isInt) {
+      const match = v.match(/-?\d+/);
+      return match ? match[0] : '0';
+    }
+    if (isFloat) {
+      const match = v.match(/-?\d+(?:\.\d+)?/);
+      return match ? match[0] : '0.0';
+    }
+
+    return v; // fallback
   }
 }
 
