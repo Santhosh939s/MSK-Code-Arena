@@ -93,8 +93,8 @@ function parseExampleBlock(block) {
   if (!inp || !out) return null;
 
   const inputVal = inp[1].replace(/\n+/g, ' ').trim();
-  const outputVal = out[1].split('\n')[0].trim(); // only first line of output
-
+  const outputVal = out[1].trim(); // full trimmed output
+  
   if (!inputVal || !outputVal) return null;
 
   return {
@@ -129,7 +129,7 @@ function extractExamples(text) {
   while ((m = reC.exec(text)) !== null) {
     const ex = {
       input: m[1].replace(/\n+/g, ' ').trim(),
-      output: m[2].split('\n')[0].trim(),
+      output: m[2].trim(),
     };
     if (ex.input && ex.output) examples.push(ex);
   }
