@@ -61,6 +61,7 @@ inline TreeNode* createTreeNode(const vector<string>& vals) {
             }
             i++;
         }
+    }
 }
 
 inline bool compareList(ListNode* l1, ListNode* l2) {
