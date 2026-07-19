@@ -12,9 +12,33 @@ async function submitController(req, res) {
       return res.status(400).json({ error: 'Code too long (max 50000 chars)' });
     }
 
-    const stored = problemStore.get(problemId);
+    let stored = problemStore.get(problemId);
     if (!stored) {
-      return res.status(404).json({ error: 'Problem not found. Please re-generate the problem.' });
+      const { problem } = req.body;
+      if (problem && problem.title && problem.examples) {
+        const { generateTemplate } = require('../services/templateService');
+        const { generateHiddenTests } = require('../utils/hiddenTestGen');
+        
+        const parsed = {
+          title: problem.title,
+          examples: problem.examples,
+          constraints: problem.constraints || []
+        };
+        const { functionName, params, returnType } = generateTemplate(parsed);
+        const visibleTests = parsed.examples.map(ex => ({ input: ex.input, output: ex.output }));
+        const hiddenTests = generateHiddenTests(parsed);
+        
+        stored = {
+          parsed,
+          signature: { functionName, params, returnType },
+          cppCode: problem.cppCode || '',
+          visibleTests,
+          hiddenTests
+        };
+        problemStore.set(problemId, stored);
+      } else {
+        return res.status(404).json({ error: 'Problem not found. Please re-generate the problem.' });
+      }
     }
 
     // Combine visible + hidden tests

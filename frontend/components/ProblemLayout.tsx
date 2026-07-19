@@ -49,7 +49,7 @@ export default function ProblemLayout({ problem }: Props) {
     setRunResult(null);
     setSubmitResult(null);
     try {
-      const result = await runCode(problem.id, code, (progress) => {
+      const result = await runCode(problem.id, code, problem, (progress) => {
         setRunningText(getStatusLabel(progress));
       });
       setRunResult(result);
@@ -73,7 +73,7 @@ export default function ProblemLayout({ problem }: Props) {
     setRunResult(null);
     setSubmitResult(null);
     try {
-      const result = await submitCode(problem.id, code, (progress) => {
+      const result = await submitCode(problem.id, code, problem, (progress) => {
         setSubmittingText(getStatusLabel(progress));
       });
       setSubmitResult(result);

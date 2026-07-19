@@ -17,18 +17,20 @@ export async function parseProblem(rawText: string): Promise<ParsedProblem> {
 export async function runCode(
   problemId: string,
   code: string,
+  problem?: ParsedProblem,
   onProgress?: (progress: { status: string; position?: number; estimatedWait?: number }) => void
 ): Promise<RunResult> {
-  const res = await api.post('/run', { problemId, code });
+  const res = await api.post('/run', { problemId, code, problem });
   return handleExecutionResponse(res.data, onProgress);
 }
 
 export async function submitCode(
   problemId: string,
   code: string,
+  problem?: ParsedProblem,
   onProgress?: (progress: { status: string; position?: number; estimatedWait?: number }) => void
 ): Promise<SubmitResult> {
-  const res = await api.post('/submit', { problemId, code });
+  const res = await api.post('/submit', { problemId, code, problem });
   return handleExecutionResponse(res.data, onProgress);
 }
 
