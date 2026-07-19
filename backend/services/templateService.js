@@ -31,6 +31,70 @@ function parseParams(exampleInput) {
       params.push({ name: name, type: inferType(m[2]) });
     }
   }
+
+  // FALLBACK: if regex matches nothing, parse as raw values
+  if (params.length === 0 && exampleInput && exampleInput.trim().length > 0) {
+    const parts = [];
+    let current = '';
+    let bracketDepth = 0;
+    
+    for (let i = 0; i < exampleInput.length; i++) {
+      const char = exampleInput[i];
+      if (char === '[' || char === '{' || char === '(') {
+        bracketDepth++;
+        current += char;
+      } else if (char === ']' || char === '}' || char === ')') {
+        bracketDepth--;
+        current += char;
+      } else if ((char === ',' || char === '\n') && bracketDepth === 0) {
+        if (current.trim().length > 0) {
+          parts.push(current.trim());
+        }
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    if (current.trim().length > 0) {
+      parts.push(current.trim());
+    }
+    
+    parts.forEach((part, index) => {
+      let name = '';
+      let valStr = part;
+      const eqIdx = part.indexOf('=');
+      if (eqIdx !== -1) {
+        name = part.substring(0, eqIdx).replace(/[^a-zA-Z0-9_]/g, '').trim();
+        valStr = part.substring(eqIdx + 1).trim();
+      }
+      
+      const inferred = inferType(valStr);
+      if (!name) {
+        const cleanType = inferred.replace(/\s+/g, '');
+        if (cleanType.includes('vector<vector')) {
+          name = `grid${index > 0 ? index + 1 : ''}`;
+        } else if (cleanType.includes('vector')) {
+          name = `arr${index > 0 ? index + 1 : ''}`;
+        } else if (cleanType.includes('string')) {
+          name = `s${index > 0 ? index + 1 : ''}`;
+        } else if (cleanType.includes('bool')) {
+          name = `flag${index > 0 ? index + 1 : ''}`;
+        } else if (cleanType.includes('long')) {
+          name = `num${index > 0 ? index + 1 : ''}`;
+        } else if (cleanType.includes('double') || cleanType.includes('float')) {
+          name = `val${index > 0 ? index + 1 : ''}`;
+        } else {
+          name = index === 0 ? 'n' : `val${index + 1}`;
+        }
+      }
+      
+      if (!seen.has(name)) {
+        seen.add(name);
+        params.push({ name, type: inferred });
+      }
+    });
+  }
+
   return params;
 }
 
