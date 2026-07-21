@@ -25,20 +25,25 @@ class CppComparisonEngine {
         std::string user_out = ss.str();
         
         auto trim = [](std::string s) {
-            s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-                return !std::isspace(ch);
-            }));
-            s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-                return !std::isspace(ch);
-            }).base(), s.end());
-            return s;
+            if (s.empty()) return s;
+            size_t start = 0;
+            while (start < s.length() && (s[start] == ' ' || s[start] == '\t' || s[start] == '\n' || s[start] == '\r')) {
+                start++;
+            }
+            if (start == s.length()) return std::string("");
+            size_t end = s.length() - 1;
+            while (end > start && (s[end] == ' ' || s[end] == '\t' || s[end] == '\n' || s[end] == '\r')) {
+                end--;
+            }
+            return s.substr(start, end - start + 1);
         };
         
         auto normalize = [](std::string s) {
             std::string res;
             bool space = false;
-            for (char c : s) {
-                if (std::isspace(c)) {
+            for (size_t i = 0; i < s.length(); i++) {
+                char c = s[i];
+                if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
                     if (!space) {
                         res += ' ';
                         space = true;
